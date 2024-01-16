@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="css/form-styles.css" />
+    <link href='https://fonts.googleapis.com/css?family=Gruppo' rel='stylesheet'>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-header">
+        <h2>login</h2>
+    </div>
+    <div class="login-form">
+        <form id="loginForm" onsubmit="return loginUser()">
+            <div class="form-group">
+                <label for="username">username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-button">
+                <button type="submit">-></button>
+                <a href="register.html">don't have a profile?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>

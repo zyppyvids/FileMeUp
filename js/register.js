@@ -1,6 +1,6 @@
 window.onload = function checkAuthentication () {
     if (sessionStorage.getItem('authenticated') === 'true') {
-        location.href = "../fileviewer.html";
+        location.href = "../main.html";
     }
 }
 
@@ -12,7 +12,7 @@ function registerUser () {
     .then(res => {
       if (res.success === true) {
         sessionStorage.setItem('authenticated', 'true');
-        location.href = "../fileviewer.html";
+        location.href = "../main.html";
       }
     });
     

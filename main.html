@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileMeUp</title>
+    <link rel="stylesheet" type="text/css" href="css/main-styles.css">
+    <style>
+        /* Add your existing styles here */
+
+        /* Improved styling for the upload form */
+        
+    </style>
+</head>
+<body>
+    <main>
+        <nav class="navbar">
+            <form class="upload-form" id="uploadForm">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <button type="button" id="upload-btn">Upload File</button>
+            </form>
+            
+            <button class="btn" id="logout-btn">Log Out</button>
+        </nav>
+        
+        <div class="file-manager">
+            <table class="file-manager-table" id="file-table">
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size(KB)</th>
+                <tbody>
+                    <!-- Your file entries go here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="js/fetchdata.js"></script>
+    <script src="js/upload.js"></script>
+</body>
+</html>

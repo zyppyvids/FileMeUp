@@ -16,7 +16,7 @@ const fetchFile = () => {
       const fileContent = connection.responseText;
 
       // Determine file type based on file extension
-      const fileType = getFileType();
+      const fileType = getFileType(fileContent);
 
       // Play/display the file
       if (fileType === 'video') {
@@ -48,7 +48,7 @@ const fetchFile = () => {
 };
 
 // Function to determine file type based on file extension
-const getFileType = () => {
+const getFileType = (fileContent) => {
   const fileExtension = fileContent.split('.').pop().toLowerCase();
   if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg') {
     return 'video';

@@ -3,7 +3,8 @@ CREATE TABLE `files` (
   `file_path` VARCHAR(255) NOT NULL ,
   `file_type` VARCHAR(255) NOT NULL ,
   `size` INT NOT NULL ,
+  `username` VARCHAR(10) NOT NULL ,
   PRIMARY KEY (`file_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `files` ADD CONSTRAINT `foreign_key` FOREIGN KEY (`file_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `files` ADD CONSTRAINT `foreign_key` FOREIGN KEY (`username`) REFERENCES `users`(`username`) ON DELETE CASCADE ON UPDATE CASCADE;

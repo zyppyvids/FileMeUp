@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>File Viewer</title>
-  <link rel="stylesheet" href="css/viewer-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Viewer</title>
+    <link rel="preload" href="css/viewer-styles.css" as="style">
+    <link rel="preload" href="js/fileviewer.js" as="script">
+    <link rel="preload" href="js/backbutton.js" as="script">
+    <link rel="stylesheet" href="css/viewer-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Gruppo' rel='stylesheet'>
 </head>
 <body>
-  <div id="file-container"></div>
-
-  <script src="js/fileviewer.js"></script>
+    <div id="file-container">
+        <button class="back-button" onclick="goBack()"><-</button>
+    </div>
+    
+    <script src="js/fileviewer.js"></script>
+    <script src="js/backbutton.js"></script>
 </body>
 </html>

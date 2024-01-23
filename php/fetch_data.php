@@ -6,13 +6,19 @@ include 'connection.php';
 // Get PDO instance from connection.php
 $pdo = getDbInstance();
 
+session_start();
+
 // Prepare the SQL query
-$sql = "SELECT file_name, file_type, `size` file_path FROM files";
+$sql = "SELECT file_name, file_type, `size`, file_path, owner_id FROM files WHERE owner_id = :ownerId";
 $result = array();
 
 try {
+    $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
+
     // Execute the query
-    $queryResult = $pdo->query($sql);
+    $queryResult = $pdo->prepare($sql);
+    $queryResult->bindParam(':ownerId', $ownerId);
+    $queryResult->execute();
 
     // Fetch the results
     while($row = $queryResult->fetch(PDO::FETCH_ASSOC)) {

@@ -12,6 +12,7 @@ function loginUser () {
     .then(res => {
       if (res.success === true) {
         sessionStorage.setItem('authenticated', 'true');
+        sessionStorage.setItem('userId', res.id);
         location.href = "../main.html";
       }
     });

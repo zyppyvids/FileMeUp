@@ -1,7 +1,6 @@
 window.onload = function onLoad() {
     checkAuthentication();
-    fetchData();
-
+    fetchAndSetTableData().then(() => setDownloadButtons()).then(() => updateFileManagerContent());
 }
 
 function updateFileManagerContent() {
@@ -9,8 +8,9 @@ function updateFileManagerContent() {
     var fileManager = document.querySelector(".file-manager");
 
     // Check if there are no files
-    if (fileTable && fileTable.tBodies[0].rows.length === 0) {
-        fileManager.innerHTML = "<h3>No files uploaded</h3>";
+    if (fileTable && fileTable.tBodies[0].rows.length <= 1) {
+        fileTable.remove();
+        fileManager.innerHTML = "<h1 class=\"center\">No files uploaded</h1>";
     }
 }
 
@@ -20,24 +20,32 @@ function checkAuthentication() {
     }
 }
 
-function fetchData() {
+function fetchAndSetTableData() {
     const connection = new XMLHttpRequest();
     connection.open('GET', '../php/fetch_data.php');
     connection.send();
-    connection.onload = () => {
-        if (connection.status === 200) {
-            data = JSON.parse(connection.responseText);
-            data.forEach(file => {
-                let file_type = file.file_type.split("/")[1]
-                let imgSrc = getImageForFileType(file_type)
-                const tableRow = `<tr onclick="openFile('${file.file_name}')"><td><img src="${imgSrc}" class="small-icons">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td><td><button class="download-btn" data-file="uploads/${file.file_path}">Download</button></td></tr>`;
-                
-                document.getElementById("file-table").querySelector("tbody").innerHTML += tableRow;
-            });
-        } else {
-            alert('Error fetching files');
-        }
-    };
+
+    return new Promise((resolve, reject) => {
+        connection.onload = () => {
+            if (connection.status === 200) {
+                const data = JSON.parse(connection.responseText);
+                const tbody = document.getElementById("file-table").querySelector("tbody");
+
+                data.forEach(file => {
+                    let file_type = file.file_type.split("/")[1];
+                    let imgSrc = getImageForFileType(file_type);
+                    const tableRow = `<tr><td><img src="${imgSrc}" class="small-icons"></td><td onclick="openFile('${file.file_name}')">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td><td><button class="download-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">download</span></button></td></tr>`;
+
+                    tbody.innerHTML += tableRow;
+                });
+
+                resolve(true);
+            } else {
+                alert('Error fetching files');
+                reject(new Error('Error fetching files'));
+            }
+        };
+    });
 }
 
 function getImageForFileType(fileType) {
@@ -53,4 +61,21 @@ function getImageForFileType(fileType) {
         default:
             return'../../img/unknown.png';
     }
+}
+
+function setDownloadButtons() {
+    var downloadButtons = document.querySelectorAll('.download-btn');
+
+    downloadButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            var filePath = this.getAttribute('data-file');
+            var link = document.createElement('a');
+            link.href = filePath;
+            link.download = filePath.split('/').pop(); // Set the download attribute to the file name
+            console.log(link.download)
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    });
 }

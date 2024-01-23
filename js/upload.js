@@ -1,4 +1,3 @@
-
 // Function to handle file selection and submission
 function selectFile() {
     return new Promise((resolve, reject) => {

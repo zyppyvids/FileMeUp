@@ -7,7 +7,7 @@ include 'connection.php';
 $pdo = getDbInstance();
 
 // Prepare the SQL query
-$sql = "SELECT file_name, file_type, `size` FROM files";
+$sql = "SELECT file_name, file_type, `size` file_path FROM files";
 $result = array();
 
 try {

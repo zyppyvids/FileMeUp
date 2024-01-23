@@ -35,21 +35,15 @@ if ($uploadOk == 0) {
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $destination)) {
             echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.";
 
-            // Insert file info into the database
-            $stmt = $pdo->prepare("INSERT INTO files (file_name, file_type, `size`, file_path, owner_id) VALUES (:fileName, :fileType, :fileSize, :filePath, :ownerId)");
-            
+            $stmt = $conn->prepare("INSERT INTO files (file_name, file_type, size, file_path, owner_id) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssisi", $filename, $fileType, $fileSize, $filePath, $ownerID);
+    
             // Set parameters and execute
-            $fileName = basename($_FILES["fileToUpload"]["name"]);
+            $filename = basename($_FILES["fileToUpload"]["name"]);
             $fileType = $_FILES["fileToUpload"]["type"];
             $fileSize = $_FILES["fileToUpload"]["size"];
             $filePath = $target_file;
-            $ownerId = 2;
-
-            $stmt->bindParam(':fileName', $fileName);
-            $stmt->bindParam(':fileType', $fileType);
-            $stmt->bindParam(':fileSize', $fileSize);
-            $stmt->bindParam(':filePath', $filePath);
-            $stmt->bindParam(':ownerId', $ownerId);
+            $ownerID = 18;
 
             $stmt->execute();
 
@@ -61,5 +55,4 @@ if ($uploadOk == 0) {
         echo "Temporary file does not exist.";
     }
 }
-
 ?>

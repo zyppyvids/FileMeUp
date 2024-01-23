@@ -1,4 +1,5 @@
 window.onload = function onLoad() {
+    checkAuthentication();
     fetchData();
     //updateFileManagerContent();
     // TODO: Fix
@@ -14,6 +15,12 @@ function updateFileManagerContent() {
     }
 }
 
+function checkAuthentication() {
+    if (sessionStorage.getItem('authenticated') !== 'true') {
+        location.href = "../login.html";
+    }
+}
+
 function fetchData() {
     const connection = new XMLHttpRequest();
     connection.open('GET', '../php/fetch_data.php');
@@ -24,7 +31,7 @@ function fetchData() {
             data.forEach(file => {
                 let file_type = file.file_type.split("/")[1]
                 let imgSrc = getImageForFileType(file_type);
-                const tableRow = `<tr onclick="alert('kurami')"><td><img src="${imgSrc}" class="small-icons">${file.file_name}</td><td>${file_type}</td><td>${file.file_size}</td></tr>`;
+                const tableRow = `<tr onclick="openFile('${file.file_name}')"><td><img src="${imgSrc}" class="small-icons">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td></tr>`;
                 
                 document.getElementById("file-table").querySelector("tbody").innerHTML += tableRow;
             });

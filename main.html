@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FileMeUp</title>
     <link rel="stylesheet" type="text/css" href="css/main-styles.css">
-    <style>
-        /* Add your existing styles here */
-
-        /* Improved styling for the upload form */
-        
-    </style>
+    <link href='https://fonts.googleapis.com/css?family=Gruppo' rel='stylesheet'>
 </head>
 <body>
     <main>
@@ -20,7 +15,7 @@
                 <button type="button" id="upload-btn">Upload File</button>
             </form>
             
-            <button class="btn" id="logout-btn">Log Out</button>
+            <button class="btn" id="logout-btn" onclick="logoutUser()">Log Out</button>
         </nav>
         
         <div class="file-manager">
@@ -36,5 +31,7 @@
     </main>
     <script src="js/fetchdata.js"></script>
     <script src="js/upload.js"></script>
+    <script src="js/filefunc.js"></script>
+    <script src="js/logout.js"></script>
 </body>
 </html>

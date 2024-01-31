@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileMeUp</title>
+    <link rel="preload" href="css/main-styles.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Gruppo" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" as="style">
+    <link rel="stylesheet" type="text/css" href="css/main-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Gruppo' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+    <main>
+        <nav class="navbar">
+            <form class="upload-form" id="uploadForm">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <button type="button" id="upload-btn">Upload File</button>
+            </form>
+            
+            <button class="btn" id="logout-btn" onclick="logoutUser()">Log Out</button>
+        </nav>
+        
+        <div class="file-manager">
+            <table class="file-manager-table" id="file-table">
+                <th></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size(KB)</th>
+                <th></th>
+                <tbody>
+                    <!-- Your file entries go here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="js/fetchdata.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/filefunc.js"></script>
+    <script src="js/logout.js"></script>
+</body>
+</html>

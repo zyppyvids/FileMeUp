@@ -7,53 +7,42 @@ window.onload = function checkAuthentication () {
 const fileContainer = document.getElementById('file-container');
 
 const fetchFile = () => {
-  // Connect to database
-  const connection = new XMLHttpRequest();
-  connection.open('GET', '../php/fileviewer.php');
-  connection.onload = () => {
-    if (connection.status === 200) {
-      // Get the file data
-      const fileContent = connection.responseText;
+    const selectedFile = sessionStorage.getItem('selectedFile');
+    const fileType = getFileType(selectedFile)
 
-      // Determine file type based on file extension
-      const fileType = getFileType();
+    const source = 'uploads/' + selectedFile;
 
-      // Play/display the file
-      if (fileType === 'video') {
+    // Play/display the file
+    if (fileType === 'video') {
         const fileElement = document.createElement('video');
-        fileElement.src = fileContent;
+        fileElement.src = source;
         fileElement.controls = true;
+        fileElement.style.maxWidth = '90%';
+        fileElement.style.maxHeight = '90%';
+        fileElement.classList.add('center')
         fileContainer.appendChild(fileElement);
-      } else if (fileType === 'pdf') {
-        // Handle PDF display (you may use PDF.js or embed a PDF viewer)
-        // Example: Embedding PDF.js viewer
-        const pdfElement = document.createElement('iframe');
-        pdfElement.src = 'https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(fileContent);
-        pdfElement.style.width = '100%';
-        pdfElement.style.height = '100%';
-        fileContainer.appendChild(pdfElement);
-      } else if (fileType === 'image') {
+    } else if (fileType === 'image') {
         const imageElement = document.createElement('img');
-        imageElement.src = fileContent;
+        imageElement.src = source;
+        imageElement.style.maxWidth = '80%';
+        imageElement.style.maxHeight = '75%';
+        imageElement.classList.add('center')
         fileContainer.appendChild(imageElement);
-      } else {
-        // Handle other file types as needed (e.g., docx)
-        alert('Unsupported file type');
-      }
-    } else {
-      alert('Error fetching file');
+    } else if (fileType === 'other') {
+        const iframeElement = document.createElement('iframe');
+        iframeElement.src = source;
+        iframeElement.style.width = '90%';
+        iframeElement.style.height = '90%';
+        iframeElement.classList.add('center')
+        fileContainer.appendChild(iframeElement);
     }
-  };
-  connection.send();
 };
 
 // Function to determine file type based on file extension
-const getFileType = () => {
-  const fileExtension = fileContent.split('.').pop().toLowerCase();
+const getFileType = (fileName) => {
+  const fileExtension = fileName.split('.').pop().toLowerCase();
   if (fileExtension === 'mp4' || fileExtension === 'webm' || fileExtension === 'ogg') {
     return 'video';
-  } else if (fileExtension === 'pdf') {
-    return 'pdf';
   } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
     return 'image';
   } else {

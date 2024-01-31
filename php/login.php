@@ -13,7 +13,7 @@ try {
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     // Prepare the SQL statement to retrieve the hashed password for the given username
-    $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE username = :username");
+    $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 
@@ -27,8 +27,9 @@ try {
             // Set a session variable to mark the user as authenticated
             $_SESSION['authenticated'] = true;
             $_SESSION['username'] = $username;
+            $_SESSION['userId'] = $result['id'];
             
-            echo json_encode(['success' => true, 'message' => 'Authentication successful']);
+            echo json_encode(['id' => $result['id'], 'success' => true, 'message' => 'Authentication successful']);
         } else {
             // Invalid password
             echo json_encode(['success' => false, 'message' => 'Invalid password']);

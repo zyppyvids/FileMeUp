@@ -6,7 +6,7 @@ session_start();
 
 try {
     // Get DB Instance
-    $pdo = getDbInstance();
+    $first_pdo = getDbInstance();
 
     // Sample user input (replace with your actual data)
     $username = isset($_POST['username']) ? $_POST['username'] : '';
@@ -16,18 +16,35 @@ try {
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
     // Prepare the SQL statement to insert the user into the database
-    $stmt = $pdo->prepare("INSERT INTO users (username, password_hash) VALUES (:username, :password)");
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':password', $hashedPassword);
-    $stmt->execute();
+    $first_stmt = $first_pdo->prepare("INSERT INTO users (username, password_hash) VALUES (:username, :password)");
+    $first_stmt->bindParam(':username', $username);
+    $first_stmt->bindParam(':password', $hashedPassword);
+    $first_stmt->execute();
 
     // Check if the insertion was successful
-    if ($stmt->rowCount() > 0) {
-        // Set a session variable to mark the user as authenticated
-        $_SESSION['authenticated'] = true;
-        $_SESSION['username'] = $username;
+    if ($first_stmt->rowCount() > 0) {
+        // Get DB Instance
+        $second_pdo = getDbInstance();
 
-        echo json_encode(['success' => true, 'message' => 'User registered successfully']);
+        // Prepare the SQL statement to retrieve the id for the given username
+        $second_stmt = $second_pdo->prepare("SELECT id FROM users WHERE username = :username");
+        $second_stmt->bindParam(':username', $username);
+        $second_stmt->execute();
+
+        // Fetch the result
+        $result = $second_stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Check if the username exists in the database
+        if ($result) {
+            // Set a session variable to mark the user as authenticated
+            $_SESSION['authenticated'] = true;
+            $_SESSION['username'] = $username;
+            $_SESSION['userId'] = $result['id'];
+
+            echo json_encode(['id' => $result['id'], 'success' => true, 'message' => 'User registered successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'User registration failed']);
+        }
     } else {
         echo json_encode(['success' => false, 'message' => 'User registration failed']);
     }

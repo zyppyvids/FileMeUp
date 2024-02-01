@@ -6,16 +6,24 @@ window.onload = function checkAuthentication () {
 
 function registerUser () {
     var data = new FormData(document.getElementById("registerForm"));
-  
-    fetch("../php/register.php", { method:"POST", "body":data })
-    .then(res => res.json())
-    .then(res => {
-      if (res.success === true) {
-        sessionStorage.setItem('authenticated', 'true');
-        sessionStorage.setItem('userId', res.id);
-        location.href = "../main.html";
-      }
-    });
-    
+    var password = data.get("password");
+
+    if(validatePassword(password)) {
+      fetch("../php/register.php", { method:"POST", "body":data })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success === true) {
+          sessionStorage.setItem('authenticated', 'true');
+          sessionStorage.setItem('userId', res.id);
+          location.href = "../main.html";
+        } else {
+          showSnackbarWithText("Registration failed. Try again later...")
+        }
+      });
+    } else {
+      var errorElement = document.getElementById("error");
+      errorElement.style.visibility = "visible"
+    }
+
     return false;
 }

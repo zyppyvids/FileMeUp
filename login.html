@@ -6,6 +6,7 @@
     <title>Login</title>
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Gruppo" as="style">
     <link rel="stylesheet" type="text/css" href="css/form-styles.css" />
+    <link rel="stylesheet" type="text/css" href="css/snackbar-styles.css" />
     <link href='https://fonts.googleapis.com/css?family=Gruppo' rel='stylesheet'>
 </head>
 <body>
@@ -16,6 +17,7 @@
     </div>
     <div class="login-form">
         <form id="loginForm" onsubmit="return loginUser()">
+            <label for="password-error" id="error">password should contain a small letter, a capital letter and a number and it should be at least 8 characters long</label>
             <div class="form-group">
                 <label for="username">username</label>
                 <input type="text" id="username" name="username" required>
@@ -32,6 +34,10 @@
     </div>
 </div>
 
+<div id="snackbar"></div>
+
+<script src="js/snackbar.js"></script>
+<script src="js/validation.js"></script>
 <script src="js/login.js"></script>
 </body>
 </html>

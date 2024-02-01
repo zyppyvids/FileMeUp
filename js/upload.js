@@ -20,7 +20,7 @@ document.getElementById("upload-btn").addEventListener("click", async function (
 
         uploadFile();
     } catch (error) {
-        console.error("Error selecting file:", error);
+        showSnackbarWithText("Upload failed. Try again later...")
     }
 });
 

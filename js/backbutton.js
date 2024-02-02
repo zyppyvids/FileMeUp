@@ -1,3 +1,3 @@
 function goBack() {
-    location.href += "/..";
+    location.href = "../main.html";
 }

@@ -1,6 +1,9 @@
 window.onload = function onLoad() {
     checkAuthentication();
-    fetchAndSetTableData().then(() => setDownloadButtons()).then(() => updateFileManagerContent());
+    fetchAndSetTableData()
+    .then(() => setDownloadButtons())
+    .then(() => setDeleteButtons())
+    .then(() => updateFileManagerContent());
 }
 
 function updateFileManagerContent() {
@@ -34,7 +37,7 @@ function fetchAndSetTableData() {
                 data.forEach(file => {
                     let file_type = file.file_type.split("/")[1];
                     let imgSrc = getImageForFileType(file_type);
-                    const tableRow = `<tr><td><img src="${imgSrc}" class="small-icons"></td><td onclick="openFile('${file.file_name}')">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td><td><button class="download-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">download</span></button></td></tr>`;
+                    const tableRow = `<tr><td><img src="${imgSrc}" class="small-icons"></td><td onclick="openFile('${file.file_name}')">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td><td><button class="download-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">download</span></button></td><td><button class="delete-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">delete</span></button></td></tr>`;
 
                     tbody.innerHTML += tableRow;
                 });
@@ -79,3 +82,43 @@ function setDownloadButtons() {
         });
     });
 }
+
+function setDeleteButtons() {
+    var deleteButtons = document.querySelectorAll('.delete-btn');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            var filePath = this.getAttribute('data-file');
+            if (confirm("Are you sure you want to delete this file?")) {
+                deleteFile(filePath);
+                refreshPage();
+            }
+        });
+    });
+}
+
+function deleteFile(filePath) {
+    var file_name = filePath.split('/').pop();
+
+    fetch('../php/delete.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file: file_name }),
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('File deleted successfully.');
+        } else {
+            console.error('Failed to delete the file.');
+        }
+    })
+    .then(response => console.log(JSON.stringify(response)))
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function refreshPage(){
+    window.location.reload();
+} 

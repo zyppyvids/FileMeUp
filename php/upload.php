@@ -31,7 +31,7 @@ if ($uploadOk == 0) {
         if (!file_exists($target_file) && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $destination)) {
             echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.";
         }
-    
+        
         // Insert file info into the database
         $stmt = $pdo->prepare("INSERT INTO files (file_name, file_type, `size`, file_path, owner_id) VALUES (:fileName, :fileType, :fileSize, :filePath, :ownerId)");
         
@@ -47,9 +47,13 @@ if ($uploadOk == 0) {
         $stmt->bindParam(':fileSize', $fileSize);
         $stmt->bindParam(':filePath', $filePath);
         $stmt->bindParam(':ownerId', $ownerId);
-
-        $stmt->execute();
-        print_r($stmt->errorInfo());
+        
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle database connection errors
+            echo json_encode(['message' => 'Database error: ' . $e->getMessage()]);
+        }
     } else {
         echo "Temporary file does not exist.";
     }

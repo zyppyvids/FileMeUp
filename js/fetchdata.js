@@ -1,3 +1,5 @@
+import attachPreviewEvent from './preview.js'
+
 window.onload = function onLoad() {
     checkAuthentication();
     fetchAndSetTableData()
@@ -37,9 +39,26 @@ function fetchAndSetTableData() {
                 data.forEach(file => {
                     let file_type = file.file_type.split("/")[1];
                     let imgSrc = getImageForFileType(file_type);
-                    const tableRow = `<tr><td><img src="${imgSrc}" class="small-icons"></td><td onclick="openFile('${file.file_name}')">${file.file_name}</td><td>${file_type}</td><td>${file.size}</td><td><button class="download-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">download</span></button></td><td><button class="delete-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">delete</span></button></td></tr>`;
+                    const isImage = file_type === 'png' || file_type === 'jpeg';
+                    const filePreviewCell = isImage ? `class="file-preview" data-image-src="${file.file_path}"` : '';
 
-                    tbody.innerHTML += tableRow;
+                    const tableRow = `<tr>
+                    <td><img src="${imgSrc}" class="small-icons"></td>
+                    <td ${filePreviewCell} onclick="openFile('${file.file_name}')">${file.file_name}</td>
+                    <td>${file_type}</td><td>${file.size}</td>
+                    <td><button class="download-btn" data-file="${file.file_path}">
+                        <span class="material-symbols-outlined">download</span></button></td>
+                    <td><button class="delete-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">delete</span></button></td>
+                    </tr>`;
+                    
+                    
+
+                    tbody.insertAdjacentHTML('beforeend', tableRow);
+                    if (isImage) {
+                        const lastRow = tbody.lastElementChild;
+                        const previewCell = lastRow.querySelector('.file-preview');
+                        attachPreviewEvent(previewCell);
+                    }
                 });
 
                 resolve(true);

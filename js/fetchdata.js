@@ -1,6 +1,6 @@
-import attachPreviewEvent from './preview.js'
-
 window.onload = function onLoad() {
+    sessionStorage.setItem('files', "");
+
     checkAuthentication();
     fetchAndSetTableData()
     .then(() => setDownloadButtons())
@@ -41,17 +41,35 @@ function fetchAndSetTableData() {
                     let imgSrc = getImageForFileType(file_type);
                     const isImage = file_type === 'png' || file_type === 'jpeg';
                     const filePreviewCell = isImage ? `class="file-preview" data-image-src="${file.file_path}"` : '';
-
-                    const tableRow = `<tr>
-                    <td><img src="${imgSrc}" class="small-icons"></td>
-                    <td ${filePreviewCell} onclick="openFile('${file.file_name}')">${file.file_name}</td>
-                    <td>${file_type}</td><td>${file.size}</td>
-                    <td><button class="download-btn" data-file="${file.file_path}">
-                        <span class="material-symbols-outlined">download</span></button></td>
-                    <td><button class="delete-btn" data-file="${file.file_path}"><span class="material-symbols-outlined">delete</span></button></td>
+                    
+                    const tableRow = `
+                    <tr>
+                        <td>
+                            <input type="checkbox" onclick="checkboxFile('${file.file_path}')">
+                        </td>
+                        <td>
+                            <img src="${imgSrc}" class="small-icons">
+                        </td>
+                        <td ${filePreviewCell} onclick="openFile('${file.file_name}')">
+                            ${file.file_name}
+                        </td>
+                        <td>
+                            ${file_type}
+                        </td>
+                        <td>
+                            ${file.size}
+                        </td>
+                        <td>
+                            <button class="download-btn" data-file="${file.file_path}">
+                                <span class="material-symbols-outlined">download</span>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-btn" data-file="${file.file_path}">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </td>
                     </tr>`;
-                    
-                    
 
                     tbody.insertAdjacentHTML('beforeend', tableRow);
                     if (isImage) {
@@ -63,7 +81,7 @@ function fetchAndSetTableData() {
 
                 resolve(true);
             } else {
-                alert('Error fetching files');
+                showSnackbarWithText("Error fetching files...");
                 reject(new Error('Error fetching files'));
             }
         };
@@ -114,30 +132,3 @@ function setDeleteButtons() {
         });
     });
 }
-
-function deleteFile(filePath) {
-    var file_name = filePath.split('/').pop();
-
-    fetch('../php/delete.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ file: file_name }),
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log('File deleted successfully.');
-        } else {
-            console.error('Failed to delete the file.');
-        }
-    })
-    .then(response => console.log(JSON.stringify(response)))
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function refreshPage(){
-    window.location.reload();
-} 

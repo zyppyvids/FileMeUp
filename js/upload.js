@@ -3,7 +3,7 @@ function selectFile() {
     return new Promise((resolve, reject) => {
         const fileInput = document.getElementById("fileToUpload");
         fileInput.addEventListener("change", function () {
-            resolve(fileInput.files[0]);
+            resolve(fileInput.files);
         });
 
         // Trigger the file input click event
@@ -14,25 +14,27 @@ function selectFile() {
 /// Attach the function to the "Upload File" button
 document.getElementById("upload-btn").addEventListener("click", async function () {
     try {
-        const selectedFile = await selectFile();
+        const selectedFiles = await selectFile();
         // Perform additional logic with the selectedFile if needed
-        console.log("Selected File:", selectedFile);
+        console.log("Selected File:", selectedFiles);
 
-        uploadFile();
+        uploadFiles(selectedFiles);
     } catch (error) {
         showSnackbarWithText("Upload failed. Try again later...")
     }
 });
 
-function uploadFile () {
-    var data = new FormData();
-    data.append('fileToUpload', document.getElementById("fileToUpload").files[0])
-    console.log(document.getElementById("fileToUpload").files[0]);
-    
-    fetch("../php/upload.php", { method:"POST", "body":data })
-    .then(() => {
-        location.reload();
-    });
+function uploadFiles (files) {
+    for (let index = 0; index < files.length; index++) {
+        var data = new FormData();
+        data.append('fileToUpload', files[index])
+        
+        fetch("../php/upload.php", { method:"POST", "body":data }).then(() => {
+            if(index == files.length - 1) {
+                refreshPage();
+            }
+        });
+    }
     
     return false;
 }

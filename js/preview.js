@@ -17,5 +17,3 @@ function attachPreviewEvent(cell) {
         }
     });
 }
-
-export default attachPreviewEvent;

@@ -6,7 +6,8 @@ $pdo = getDbInstance();
 
 session_start();
 
-$target_dir = "../uploads/"; // Ensure this directory exists and is writable
+$ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
+$target_dir = "../uploads/" . $ownerId . '/'; // Ensure this directory exists and is writable
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
 $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));

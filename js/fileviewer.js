@@ -8,10 +8,10 @@ const fileContainer = document.getElementById('file-container');
 
 const fetchFile = () => {
     const selectedFile = sessionStorage.getItem('selectedFile');
+    const ownerID = sessionStorage.getItem('userId')
     const fileType = getFileType(selectedFile)
 
-    const source = 'uploads/' + selectedFile;
-
+    const source = 'uploads/' + ownerID + '/' + selectedFile;
     // Play/display the file
     if (fileType === 'video') {
         const fileElement = document.createElement('video');

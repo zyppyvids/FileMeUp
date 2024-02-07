@@ -16,6 +16,7 @@ window.onload = function onLoad() {
         updateFileManagerContent(); // Handle error by updating file manager content
     });
 }
+
 function updateFileManagerContent() {
     var fileTable = document.getElementById("file-table");
     var fileManager = document.querySelector(".file-manager");
@@ -64,7 +65,7 @@ function fetchAndSetTableData(visibilityMode) {
                         <td>
                             <img src="${imgSrc}" class="small-icons">
                         </td>
-                        <td ${filePreviewCell} onclick="openFile('${file.file_name}')" style="position: relative">
+                        <td ${filePreviewCell} onclick="openFile('${file.file_path}')" style="position: relative">
                             ${file.file_name}
                         </td>
                         <td>
@@ -83,56 +84,59 @@ function fetchAndSetTableData(visibilityMode) {
                     if (visibilityMode === 0) {
                         tableRow = tableRow.concat(
                             ` <td>
-                        <button class="delete-btn" data-file="${file.file_path}">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </td>`
+                    <button class="delete-btn" data-file="${file.file_path}">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>`
                         );
                     }
 
                     return getFileVisibility(file.file_path)
-                        .then(data => {
-                            var isPrivate = data.is_private;
-                            if (visibilityMode === 0) {    
+                    .then(data => {
+                        var isPrivate = data.is_private;
+                        if (visibilityMode === 0) {
                             if (isPrivate === 1) {
                                 tableRow = tableRow.concat(
                                     `
-                        <td>
-                        <button class="public-btn" data-file="${file.file_path}">
-                                        <span class="material-symbols-outlined">public</span>
-                                    </button>
-                        </td>
-                        `
+                                    <td>
+                                    <button class="public-btn" data-file="${file.file_path}">
+                                                    <span class="material-symbols-outlined">public</span>
+                                                </button>
+                                    </td>
+                                    `
                                 );
                             } else {
                                 tableRow = tableRow.concat(
                                     `
-                        <td>
-                        <button class="private-btn" data-file="${file.file_path}">
-                                        <span class="material-symbols-outlined">🔒</span>
-                                    </button>
-                        </td>
-                        `)
+                                    <td>
+                                    <button class="private-btn" data-file="${file.file_path}">
+                                                    <span class="material-symbols-outlined">🔒</span>
+                                                </button>
+                                    </td>
+                                    `)
                             }
                         }
-                        })
-                        .catch(error => {
-                            console.error(error);
-                            showSnackbarWithText("Failed to fetch file status...");
-                        })
-                        .then(() => tableRow += '</td></tr>');
-                }))
-                    .then(tableRows => {
-                        tableRows.forEach(tableRow => {
-                            tbody.insertAdjacentHTML('beforeend', tableRow);
-                        });
-                        resolve(true);
                     })
                     .catch(error => {
                         console.error(error);
-                        showSnackbarWithText("Error fetching files...");
-                        reject(new Error('Error fetching files'));
+                        showSnackbarWithText("Failed to fetch file status...");
+                    })
+                    .then(() => tableRow += '</td></tr>')
+                    .then(tableRow => {
+                        tbody.insertAdjacentHTML('beforeend', tableRow);
+                        if (isImage) {
+                            const lastRow = tbody.lastElementChild;
+                            const previewCell = lastRow.querySelector('.file-preview');
+                            attachPreviewEvent(previewCell);
+                        }
                     });
+                }))
+                .then(() => resolve(true))
+                .catch(error => {
+                    console.error(error);
+                    showSnackbarWithText("Error fetching files...");
+                    reject(new Error('Error fetching files'));
+                });
             } else {
                 showSnackbarWithText("Error fetching files...");
                 reject(new Error('Error fetching files'));
@@ -162,11 +166,11 @@ function setDownloadButtons() {
     var downloadButtons = document.querySelectorAll('.download-btn');
 
     downloadButtons.forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             var filePath = this.getAttribute('data-file');
             var link = document.createElement('a');
             link.href = filePath;
-            link.download = filePath.split('/').pop(); 
+            link.download = filePath.split('/').pop();
             console.log(link.download)
             document.body.appendChild(link);
             link.click();
@@ -178,7 +182,7 @@ function setDownloadButtons() {
 function setDeleteButtons() {
     var deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             var filePath = this.getAttribute('data-file');
             if (confirm("Are you sure you want to delete this file?")) {
                 deleteFile(filePath);
@@ -191,9 +195,9 @@ function setDeleteButtons() {
 function setPublicButtons() {
     var publicButtons = document.querySelectorAll('.public-btn');
     publicButtons.forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             var filePath = this.getAttribute('data-file');
-            var visibility = 0; 
+            var visibility = 0;
             changeFileVisibility(filePath, visibility);
             refreshPage();
         });
@@ -203,7 +207,7 @@ function setPublicButtons() {
 function setPrivateButtons() {
     var publicButtons = document.querySelectorAll('.private-btn');
     publicButtons.forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             var filePath = this.getAttribute('data-file');
             var visibility = 1;
             changeFileVisibility(filePath, visibility);
@@ -220,7 +224,10 @@ function changeFileVisibility(filePath, visibility) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ file: file_name, visibility: visibility }), 
+        body: JSON.stringify({
+            file: file_name,
+            visibility: visibility
+        }),
     })
     .then(response => {
         if (response.ok) {
@@ -238,12 +245,14 @@ function getFileVisibility(filePath) {
     var file_name = filePath.split('/').pop();
 
     return fetch('../php/get_file_visibility.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ file: file_name }),
-    })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                file: file_name
+            }),
+        })
         .then(response => {
             if (response.ok) {
                 return response.json();
@@ -256,6 +265,3 @@ function getFileVisibility(filePath) {
             throw new Error('Failed to update the file');
         });
 }
-
-
-

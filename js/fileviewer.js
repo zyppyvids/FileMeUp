@@ -11,7 +11,7 @@ const fetchFile = () => {
     const ownerID = sessionStorage.getItem('userId')
     const fileType = getFileType(selectedFile)
 
-    const source = 'uploads/' + ownerID + '/' + selectedFile;
+    const source = selectedFile.replace(/^[./]+/, '');;
     // Play/display the file
     if (fileType === 'video') {
         const fileElement = document.createElement('video');

@@ -41,7 +41,7 @@ if ($uploadOk == 0) {
         $fileSize = $_FILES["fileToUpload"]["size"];
         $filePath = $target_file;
         $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
-        $isPrivate = 0;
+        $isPrivate = 1;
 
         $stmt->bindParam(':fileName', $fileName);
         $stmt->bindParam(':fileType', $fileType);

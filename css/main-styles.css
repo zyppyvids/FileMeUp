@@ -33,6 +33,7 @@ nav {
     padding: 10px 20px;
     top: 1%;
     width: 95%;
+    z-index: 2;
 }
 
 .file-manager {
@@ -253,6 +254,7 @@ input[type="file"] {
     display: none;
     position: absolute;
     border: 1px solid #ddd;
+    z-index: 1;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     max-width: 200px;
 }

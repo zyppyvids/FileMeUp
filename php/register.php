@@ -3,7 +3,6 @@
 include 'connection.php';
 
 session_start();
-
 try {
     // Get DB Instance
     $first_pdo = getDbInstance();
@@ -40,7 +39,10 @@ try {
             $_SESSION['authenticated'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['userId'] = $result['id'];
-
+            $userDirectory = "../uploads/" . $result['id'];
+            if (!file_exists($userDirectory)) {
+                mkdir($userDirectory, 0777, true);
+            }
             echo json_encode(['id' => $result['id'], 'success' => true, 'message' => 'User registered successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'User registration failed']);

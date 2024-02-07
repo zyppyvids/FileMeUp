@@ -114,6 +114,18 @@ input[type="file"] {
     background-color: #da190b;
 }
 
+#toggle-visibility-btn {
+    background-color: #ce72b4;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#toggle-visibility-btn:hover {
+    background-color: #8d3975;
+}
+
 .file-manager-table th:nth-child(1){
     width: 1%;
 }
@@ -207,6 +219,50 @@ input[type="file"] {
 
 .delete-btn:hover, .delete-btn:focus {
     background-color: #c70d0d;
+    color: #fff;
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.public-btn {
+    padding: 10px 15px;
+    background-color: #4c81f6;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.public-btn:hover, .public-btn:focus {
+    background-color: #0a44c2;
+    color: #fff;
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.private-btn {
+    padding: 10px 10px;
+    background-color: white;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px white(0,0,0,0.2);
+}
+
+.private-btn:hover, .private-btn:focus {
+    background-color: #fff;
     color: #fff;
     -webkit-transform: translateY(-2px);
     transform: translateY(-2px);

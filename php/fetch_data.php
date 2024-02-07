@@ -9,7 +9,14 @@ $pdo = getDbInstance();
 session_start();
 
 // Prepare the SQL query
-$sql = "SELECT file_name, file_type, `size`, file_path, owner_id FROM files WHERE owner_id = :ownerId";
+$isPrivate = isset($_GET['isPrivate']) ? $_GET['isPrivate'] : 0;
+
+if ($isPrivate == 0) {
+    $sql = "SELECT file_name, file_type, `size`, file_path, owner_id FROM files WHERE owner_id = :ownerId";
+} else {
+    $sql = "SELECT file_name, file_type, `size`, file_path, owner_id FROM files WHERE is_private = 0";
+}
+
 $result = array();
 
 try {
@@ -17,7 +24,9 @@ try {
 
     // Execute the query
     $queryResult = $pdo->prepare($sql);
-    $queryResult->bindParam(':ownerId', $ownerId);
+    if ($isPrivate == 0) {
+        $queryResult->bindParam(':ownerId', $ownerId);
+    }
     $queryResult->execute();
 
     // Fetch the results

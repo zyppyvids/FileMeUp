@@ -2,12 +2,20 @@ window.onload = function onLoad() {
     sessionStorage.setItem('files', "");
 
     checkAuthentication();
-    fetchAndSetTableData()
-    .then(() => setDownloadButtons())
-    .then(() => setDeleteButtons())
-    .then(() => updateFileManagerContent());
+    // Pass visibilityMode from the window object
+    fetchAndSetTableData(window.visibilityMode).then(() => {
+        setDownloadButtons();
+        if (visibilityMode === 0) {
+            setDeleteButtons();
+            setPublicButtons();
+            setPrivateButtons();
+        }
+        updateFileManagerContent();
+    }).catch(error => {
+        console.error(error);
+        updateFileManagerContent(); // Handle error by updating file manager content
+    });
 }
-
 function updateFileManagerContent() {
     var fileTable = document.getElementById("file-table");
     var fileManager = document.querySelector(".file-manager");
@@ -25,9 +33,15 @@ function checkAuthentication() {
     }
 }
 
-function fetchAndSetTableData() {
+function fetchAndSetTableData(visibilityMode) {
     const connection = new XMLHttpRequest();
-    connection.open('GET', '../php/fetch_data.php');
+    var url;
+    if (visibilityMode === 1) {
+        url = '../php/fetch_data.php?isPrivate=1'; // Include isPrivate parameter in the URL
+    } else {
+        url = '../php/fetch_data.php?isPrivate=0'; // Include isPrivate parameter in the URL
+    }
+    connection.open('GET', url);
     connection.send();
 
     return new Promise((resolve, reject) => {
@@ -36,13 +50,13 @@ function fetchAndSetTableData() {
                 const data = JSON.parse(connection.responseText);
                 const tbody = document.getElementById("file-table").querySelector("tbody");
 
-                data.forEach(file => {
+                Promise.all(data.map(file => {
                     let file_type = file.file_type.split("/")[1];
                     let imgSrc = getImageForFileType(file_type);
                     const isImage = file_type === 'png' || file_type === 'jpeg';
                     const filePreviewCell = isImage ? `class="file-preview" data-image-src="${file.file_path}"` : '';
-                    
-                    const tableRow = `
+
+                    var tableRow = `
                     <tr>
                         <td>
                             <input type="checkbox" onclick="checkboxFile('${file.file_path}')">
@@ -64,22 +78,61 @@ function fetchAndSetTableData() {
                                 <span class="material-symbols-outlined">download</span>
                             </button>
                         </td>
-                        <td>
-                            <button class="delete-btn" data-file="${file.file_path}">
+                        <td>`;
+
+                    if (visibilityMode === 0) {
+                        tableRow = tableRow.concat(
+                            ` <td>
+                        <button class="delete-btn" data-file="${file.file_path}">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
-                        </td>
-                    </tr>`;
-
-                    tbody.insertAdjacentHTML('beforeend', tableRow);
-                    if (isImage) {
-                        const lastRow = tbody.lastElementChild;
-                        const previewCell = lastRow.querySelector('.file-preview');
-                        attachPreviewEvent(previewCell);
+                        </td>`
+                        );
                     }
-                });
 
-                resolve(true);
+                    return getFileVisibility(file.file_path)
+                        .then(data => {
+                            var isPrivate = data.is_private;
+                            if (visibilityMode === 0) {    
+                            if (isPrivate === 1) {
+                                tableRow = tableRow.concat(
+                                    `
+                        <td>
+                        <button class="public-btn" data-file="${file.file_path}">
+                                        <span class="material-symbols-outlined">public</span>
+                                    </button>
+                        </td>
+                        `
+                                );
+                            } else {
+                                tableRow = tableRow.concat(
+                                    `
+                        <td>
+                        <button class="private-btn" data-file="${file.file_path}">
+                                        <span class="material-symbols-outlined">🔒</span>
+                                    </button>
+                        </td>
+                        `)
+                            }
+                        }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            showSnackbarWithText("Failed to fetch file status...");
+                        })
+                        .then(() => tableRow += '</td></tr>');
+                }))
+                    .then(tableRows => {
+                        tableRows.forEach(tableRow => {
+                            tbody.insertAdjacentHTML('beforeend', tableRow);
+                        });
+                        resolve(true);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        showSnackbarWithText("Error fetching files...");
+                        reject(new Error('Error fetching files'));
+                    });
             } else {
                 showSnackbarWithText("Error fetching files...");
                 reject(new Error('Error fetching files'));
@@ -88,8 +141,10 @@ function fetchAndSetTableData() {
     });
 }
 
+
+
 function getImageForFileType(fileType) {
-    switch(fileType) {
+    switch (fileType) {
         case 'png':
         case 'jpeg':
             return '../../img/img.png';
@@ -99,7 +154,7 @@ function getImageForFileType(fileType) {
         case 'plain':
             return '../../img/txt.png';
         default:
-            return'../../img/unknown.png';
+            return '../../img/unknown.png';
     }
 }
 
@@ -107,11 +162,11 @@ function setDownloadButtons() {
     var downloadButtons = document.querySelectorAll('.download-btn');
 
     downloadButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             var filePath = this.getAttribute('data-file');
             var link = document.createElement('a');
             link.href = filePath;
-            link.download = filePath.split('/').pop(); // Set the download attribute to the file name
+            link.download = filePath.split('/').pop(); 
             console.log(link.download)
             document.body.appendChild(link);
             link.click();
@@ -123,7 +178,7 @@ function setDownloadButtons() {
 function setDeleteButtons() {
     var deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             var filePath = this.getAttribute('data-file');
             if (confirm("Are you sure you want to delete this file?")) {
                 deleteFile(filePath);
@@ -132,3 +187,75 @@ function setDeleteButtons() {
         });
     });
 }
+
+function setPublicButtons() {
+    var publicButtons = document.querySelectorAll('.public-btn');
+    publicButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            var filePath = this.getAttribute('data-file');
+            var visibility = 0; 
+            changeFileVisibility(filePath, visibility);
+            refreshPage();
+        });
+    });
+}
+
+function setPrivateButtons() {
+    var publicButtons = document.querySelectorAll('.private-btn');
+    publicButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            var filePath = this.getAttribute('data-file');
+            var visibility = 1;
+            changeFileVisibility(filePath, visibility);
+            refreshPage();
+        });
+    });
+}
+
+function changeFileVisibility(filePath, visibility) {
+    var file_name = filePath.split('/').pop();
+
+    fetch('../php/update_visibility.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file: file_name, visibility: visibility }), 
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('File updated successfully.');
+        } else {
+            showSnackbarWithText("Failed to update the file...");
+        }
+    })
+    .catch(error => {
+        showSnackbarWithText("Failed to update the file...");
+    });
+}
+
+function getFileVisibility(filePath) {
+    var file_name = filePath.split('/').pop();
+
+    return fetch('../php/get_file_visibility.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file: file_name }),
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to update the file');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            throw new Error('Failed to update the file');
+        });
+}
+
+
+

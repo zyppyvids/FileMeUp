@@ -21,28 +21,26 @@
             
             <button class="btn" id="logout-btn" onclick="logoutUser()">Log Out</button>
 
-            <button class="btn" id="toggle-visibility-btn" onclick="toggleFileVisibility()">Shared files</button>
+            <button class="btn" id="toggle-visibility-btn" onclick="toggleFileVisibility()">Private files</button>
         </nav>
-        
+
         <div class="file-manager">
-        <button class="download-all" onclick="downloadCheckboxFiles()">
-            <span class="material-symbols-outlined">download</span>
-        </button>
-        <button class="delete-all" onclick="deleteCheckboxFiles()">
-            <span class="material-symbols-outlined">delete</span>
-        </button>
+            <button class="download-all" onclick="downloadCheckboxFiles()">
+                <span class="material-symbols-outlined">download</span>
+            </button>
         <table class="file-manager-table" id="file-table">
             <th></th>
             <th></th>
-            <th>Name</th>
+                <th>Name</th>
             <th>Type</th>
-            <th>Size(KB)</th>
+                <th>Size(KB)</th>
             <th></th>
             <th></th>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+                <tbody>
+                    <!-- Your file entries go here -->
+                </tbody>
+            </table>
+        </div>
 
     <div id="snackbar"></div>
 
@@ -56,8 +54,8 @@
     <script src="js/logout.js"></script>
     <script src="js/toggle.js"></script>
     <script>
-        window.visibilityMode = 0; // Set the visibility mode here
+        window.visibilityMode = 1; // Set the visibility mode here
     </script>
-
 </body>
+
 </html>

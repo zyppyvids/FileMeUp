@@ -50,7 +50,7 @@ function fetchAndSetTableData() {
                         <td>
                             <img src="${imgSrc}" class="small-icons">
                         </td>
-                        <td ${filePreviewCell} onclick="openFile('${file.file_name}')">
+                        <td ${filePreviewCell} onclick="openFile('${file.file_name}')" style="position: relative">
                             ${file.file_name}
                         </td>
                         <td>

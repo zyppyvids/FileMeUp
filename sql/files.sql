@@ -5,6 +5,8 @@ CREATE TABLE `files` (
   `file_type` VARCHAR(255) NOT NULL ,
   `size` INT NOT NULL ,
   `owner_id` INT NOT NULL ,
+  `is_private` INT NOT NULL ,
+
   PRIMARY KEY (`file_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

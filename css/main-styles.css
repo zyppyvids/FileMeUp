@@ -113,6 +113,18 @@ input[type="file"] {
     background-color: #da190b;
 }
 
+#toggle-visibility-btn {
+    background-color: #01fbff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#toggle-visibility-btn:hover {
+    background-color: #5ff204;
+}
+
 .file-manager-table th:nth-child(1){
     width: 1%;
 }

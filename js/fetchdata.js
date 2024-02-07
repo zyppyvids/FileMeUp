@@ -2,12 +2,16 @@ window.onload = function onLoad() {
     sessionStorage.setItem('files', "");
 
     checkAuthentication();
-    fetchAndSetTableData()
-    .then(() => setDownloadButtons())
-    .then(() => setDeleteButtons())
-    .then(() => updateFileManagerContent());
+    // Pass visibilityMode from the window object
+    fetchAndSetTableData(window.visibilityMode).then(() => {
+        setDownloadButtons();
+        setDeleteButtons();
+        updateFileManagerContent();
+    }).catch(error => {
+        console.error(error);
+        updateFileManagerContent(); // Handle error by updating file manager content
+    });
 }
-
 function updateFileManagerContent() {
     var fileTable = document.getElementById("file-table");
     var fileManager = document.querySelector(".file-manager");
@@ -25,9 +29,15 @@ function checkAuthentication() {
     }
 }
 
-function fetchAndSetTableData() {
+function fetchAndSetTableData(visibilityMode) {
     const connection = new XMLHttpRequest();
-    connection.open('GET', '../php/fetch_data.php');
+    var url;
+    if (visibilityMode === 1) {
+        url = '../php/fetch_data.php?isPrivate=1'; // Include isPrivate parameter in the URL
+    } else {
+        url = '../php/fetch_data.php?isPrivate=0'; // Include isPrivate parameter in the URL
+    }
+    connection.open('GET', url);
     connection.send();
 
     return new Promise((resolve, reject) => {
@@ -87,6 +97,7 @@ function fetchAndSetTableData() {
         };
     });
 }
+
 
 function getImageForFileType(fileType) {
     switch(fileType) {

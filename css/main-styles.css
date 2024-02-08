@@ -248,9 +248,9 @@ input[type="file"] {
 }
 
 .private-btn {
-    padding: 10px 10px;
-    background-color: white;
-    color: white;
+    padding: 10px 15px;
+    background-color: rgb(214, 58, 58);
+    color: black;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
@@ -262,8 +262,8 @@ input[type="file"] {
 }
 
 .private-btn:hover, .private-btn:focus {
-    background-color: #fff;
-    color: #fff;
+    background-color: rgb(161, 37, 37);
+    color: black;
     -webkit-transform: translateY(-2px);
     transform: translateY(-2px);
     text-decoration: none;

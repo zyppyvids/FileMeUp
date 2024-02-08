@@ -101,7 +101,7 @@ function fetchAndSetTableData() {
                         <td>
                             ${deleteButton}
                         </td>
-                        <td>`;
+                        `;
 
                     return getFileVisibility(file.file_path, visibilityMode)
                     .then(data => {
@@ -122,18 +122,24 @@ function fetchAndSetTableData() {
                                     `
                                     <td>
                                     <button class="private-btn" data-file="${file.file_path}">
-                                                    <span class="material-symbols-outlined">🔒</span>
+                                                    <span class="material-symbols-outlined">lock</span>
                                                 </button>
                                     </td>
                                     `)
                             }
+                        } else {
+                            tableRow = tableRow.concat(
+                            `
+                            <td>
+                            </td>
+                            `)
                         }
                     })
                     .catch(error => {
                         console.error(error);
                         showSnackbarWithText("Failed to fetch file status...");
                     })
-                    .then(() => tableRow += '</td></tr>')
+                    .then(() => tableRow += '</tr>')
                     .then(tableRow => {
                         tbody.insertAdjacentHTML('beforeend', tableRow);
                         if (isImage) {

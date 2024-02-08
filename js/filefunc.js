@@ -1,6 +1,6 @@
 function openFile(fileName) {
     sessionStorage.setItem('selectedFile', fileName);
-    location.href = "../fileviewer.html";
+    location.href = "./fileviewer.html";
 }
 
 function checkboxFile(fileName) {
@@ -77,7 +77,7 @@ function deleteCheckboxFiles() {
 function deleteFile(filePath) {
     var file_name = filePath.split('/').pop();
 
-    fetch('../php/delete.php', {
+    fetch('./php/delete.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

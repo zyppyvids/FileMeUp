@@ -46,7 +46,7 @@ function updateFileManagerContent() {
 
 function checkAuthentication() {
     if (sessionStorage.getItem('authenticated') !== 'true') {
-        location.href = "login.html";
+        location.href = "./login.html";
     }
 }
 
@@ -55,9 +55,9 @@ function fetchAndSetTableData() {
     var visibilityMode = sessionStorage.getItem('visibilityMode');
     var url;
     if (visibilityMode === '1') {
-        url = 'php/fetch_data.php?isPrivate=1'; // Include isPrivate parameter in the URL
+        url = './php/fetch_data.php?isPrivate=1'; // Include isPrivate parameter in the URL
     } else {
-        url = 'php/fetch_data.php?isPrivate=0'; // Include isPrivate parameter in the URL
+        url = './php/fetch_data.php?isPrivate=0'; // Include isPrivate parameter in the URL
     }
     connection.open('GET', url);
     connection.send();
@@ -172,14 +172,14 @@ function getImageForFileType(fileType) {
     switch (fileType) {
         case 'png':
         case 'jpeg':
-            return '../../img/img.png';
+            return './img/img.png';
         case 'pdf':
-            return '../../img/pdf.png';
+            return './img/pdf.png';
         case 'txt':
         case 'plain':
-            return '../../img/txt.png';
+            return './img/txt.png';
         default:
-            return '../../img/unknown.png';
+            return './img/unknown.png';
     }
 }
 
@@ -239,7 +239,7 @@ function setPrivateButtons() {
 function changeFileVisibility(filePath, visibility) {
     var file_name = filePath.split('/').pop();
 
-    fetch('php/update_visibility.php', {
+    fetch('./php/update_visibility.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ function changeFileVisibility(filePath, visibility) {
 function getFileVisibility(filePath, visibilityMode) {
     var file_name = filePath.split('/').pop();
 
-    return fetch('php/get_file_visibility.php', {
+    return fetch('./php/get_file_visibility.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

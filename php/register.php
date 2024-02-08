@@ -39,7 +39,7 @@ try {
             $_SESSION['authenticated'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['userId'] = $result['id'];
-            $userDirectory = "../uploads/" . $result['id'];
+            $userDirectory = dirname(__FILE__) . "/../uploads/" . $result['id'];
             if (!file_exists($userDirectory)) {
                 mkdir($userDirectory, 0777, true);
             }

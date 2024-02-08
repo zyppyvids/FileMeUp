@@ -29,17 +29,19 @@ if ($uploadOk == 0) {
 } else {
     if (file_exists($_FILES["fileToUpload"]["tmp_name"])) {
         $destination = getcwd() . '/' . $target_file;
-        if (!file_exists($target_file) && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $destination)) {
+        if (!file_exists($destination) && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $destination)) {
             echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.";
-        
-         // Insert file info into the database
+            
+            $current_file_path = "./uploads/" . $ownerId . '/' . basename($_FILES["fileToUpload"]["name"]);
+
+            // Insert file info into the database
             $stmt = $pdo->prepare("INSERT INTO files (file_name, file_type, `size`, file_path, owner_id, is_private) VALUES (:fileName, :fileType, :fileSize, :filePath, :ownerId, :isPrivate)");
             
             // Set parameters and execute
             $fileName = basename($_FILES["fileToUpload"]["name"]);
             $fileType = $_FILES["fileToUpload"]["type"];
             $fileSize = $_FILES["fileToUpload"]["size"];
-            $filePath = $target_file;
+            $filePath = $current_file_path;
             $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
             $isPrivate = 1;
 

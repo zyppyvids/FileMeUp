@@ -1,6 +1,6 @@
 window.onload = function checkAuthentication () {
     if (sessionStorage.getItem('authenticated') !== 'true') {
-        location.href = "login.html";
+        location.href = "./login.html";
     }
 }
 

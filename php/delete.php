@@ -14,7 +14,7 @@ if(isset($requestData['file'])) {
     
     $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 68;
     
-    $filePath = dirname(__DIR__) . '/uploads/' . $ownerId . '/' . $file_name;
+    $filePath = getcwd() . '/../uploads/' . $ownerId . '/' . $file_name;
     if (file_exists($filePath)) {
         if (unlink($filePath)) {
             echo 'The file ' . $file_name . ' was deleted successfully from the server!';

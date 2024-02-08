@@ -30,10 +30,21 @@ nav {
     position: fixed;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 10px 20px;
     top: 1%;
     width: 95%;
     z-index: 2;
+}
+
+#greeting {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-right: auto; /* This will push everything else to the right */
+    padding-left: 20px; 
+    align-items: center;
+    
 }
 
 .file-manager {
@@ -104,6 +115,7 @@ input[type="file"] {
 
 #logout-btn {
     background-color: #f44336;
+    padding: 10px 20px;
     color: white;
     border: none;
     cursor: pointer;
@@ -116,6 +128,7 @@ input[type="file"] {
 
 #toggle-visibility-btn {
     background-color: #ce72b4;
+    padding: 10px 20px;
     color: white;
     border: none;
     cursor: pointer;

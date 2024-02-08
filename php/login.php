@@ -29,7 +29,7 @@ try {
             $_SESSION['username'] = $username;
             $_SESSION['userId'] = $result['id'];
             
-            echo json_encode(['id' => $result['id'], 'success' => true, 'message' => 'Authentication successful']);
+            echo json_encode(['id' => $result['id'], 'username' => $username, 'success' => true, 'message' => 'Authentication successful']);
         } else {
             // Invalid password
             echo json_encode(['success' => false, 'message' => 'Invalid password']);

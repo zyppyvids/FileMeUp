@@ -1,9 +1,10 @@
 window.onload = function onLoad() {
     sessionStorage.setItem('files', "");
+
     var visibilityMode = sessionStorage.getItem('visibilityMode');
     loadVisibility(visibilityMode);
+
     checkAuthentication();
-    // Pass visibilityMode from the window object
     fetchAndSetTableData(visibilityMode).then(() => {
         setDownloadButtons();
         if (visibilityMode === '0') {
@@ -14,7 +15,7 @@ window.onload = function onLoad() {
         updateFileManagerContent();
     }).catch(error => {
         console.error(error);
-        updateFileManagerContent(); // Handle error by updating file manager content
+        updateFileManagerContent();
     });
 }
 
@@ -28,6 +29,8 @@ function loadVisibility(visibilityMode) {
         buttonBody.innerHTML = 'Private files';
         deleteAllBody[0].style.display = 'none';
     }
+    
+    document.getElementById('greeting').innerHTML = 'Hello, ' + sessionStorage.getItem('username');
 }
 
 function updateFileManagerContent() {

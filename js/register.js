@@ -16,6 +16,7 @@ function registerUser () {
           sessionStorage.setItem('authenticated', 'true');
           sessionStorage.setItem('userId', res.id);
           sessionStorage.setItem('visibilityMode', 0);
+          sessionStorage.setItem('username', res.username);
           location.href = "../main.html";
         } else {
           showSnackbarWithText("Registration failed. Try again later...")

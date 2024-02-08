@@ -14,15 +14,17 @@
 </head>
 <body>
     <nav class="navbar">
+        <span id="greeting"></span>  
+
         <form class="upload-form" id="uploadForm">
             <input type="file" name="fileToUpload" id="fileToUpload" multiple>
             <button type="button" id="upload-btn">Upload File</button>
         </form>
-            
-            <button class="btn" id="logout-btn" onclick="logoutUser()">Log Out</button>
+        
+        <button class="btn" id="toggle-visibility-btn" onclick="toggleFileVisibility()"></button>
 
-            <button class="btn" id="toggle-visibility-btn" onclick="toggleFileVisibility()"></button>
-        </nav>
+        <button class="btn" id="logout-btn" onclick="logoutUser()">Log Out</button>
+    </nav>
         
         <div class="file-manager">
         <button class="download-all" onclick="downloadCheckboxFiles()">

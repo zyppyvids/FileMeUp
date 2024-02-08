@@ -43,7 +43,7 @@ try {
             if (!file_exists($userDirectory)) {
                 mkdir($userDirectory, 0777, true);
             }
-            echo json_encode(['id' => $result['id'], 'success' => true, 'message' => 'User registered successfully']);
+            echo json_encode(['id' => $result['id'], 'username' => $username, 'success' => true, 'message' => 'User registered successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'User registration failed']);
         }

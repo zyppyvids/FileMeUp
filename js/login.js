@@ -16,6 +16,7 @@ function loginUser () {
           sessionStorage.setItem('authenticated', 'true');
           sessionStorage.setItem('userId', res.id);
           sessionStorage.setItem('visibilityMode', 0);
+          sessionStorage.setItem('username', res.username);
           location.href = "../main.html";
         } else {
           showSnackbarWithText("Login failed. Try again later...")

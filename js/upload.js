@@ -29,7 +29,7 @@ function uploadFiles (files) {
         var data = new FormData();
         data.append('fileToUpload', files[index])
         
-        fetch("../php/upload.php", { method:"POST", "body":data }).then(() => {
+        fetch("php/upload.php", { method:"POST", "body":data }).then(() => {
             if(index == files.length - 1) {
                 refreshPage();
             }

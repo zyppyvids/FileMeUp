@@ -10,11 +10,11 @@ if (!empty($_SERVER['HTTPS']) && ('on' == $_SERVER['HTTPS'])) {
 
 if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true) {
 	$uri .= $_SERVER['HTTP_HOST'];
-	header('Location: '.$uri.'/main.html');
+	header('Location: ./main.html');
 	exit;
 } else {
 	$uri .= $_SERVER['HTTP_HOST'];
-	header('Location: '.$uri.'/login.html');
+	header('Location: ./login.html');
 	exit;
 }
 

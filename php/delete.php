@@ -12,9 +12,9 @@ if(isset($requestData['file'])) {
         die("Connection failed.");
     }
     
-    $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 1;
+    $ownerId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 68;
     
-    $filePath = dirname(__DIR__) . '\\uploads\\' . $ownerId . '\\' . $file_name;
+    $filePath = dirname(__DIR__) . '/uploads/' . $ownerId . '/' . $file_name;
     if (file_exists($filePath)) {
         if (unlink($filePath)) {
             echo 'The file ' . $file_name . ' was deleted successfully from the server!';
@@ -34,6 +34,7 @@ if(isset($requestData['file'])) {
         }
     } else {
         echo 'The file ' . $file_name . ' does not exist on the server.';
+        echo $filePath;
     }
 } else {
     echo 'File is not set correctly';

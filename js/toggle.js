@@ -1,8 +1,7 @@
 function toggleFileVisibility() {
-    if (location.href.includes("shared.html")) {
-        location.href = "../main.html";
-    }
-    else if (location.href.includes("main.html")) {
-        location.href = "../shared.html";
-    }
+    visibilityMode = sessionStorage.getItem('visibilityMode');
+    visibilityMode = visibilityMode === '0' ? '1' : '0';
+    sessionStorage.setItem('visibilityMode', visibilityMode)
+
+    refreshPage();
 }

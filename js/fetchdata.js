@@ -1,11 +1,12 @@
 window.onload = function onLoad() {
     sessionStorage.setItem('files', "");
-
+    var visibilityMode = sessionStorage.getItem('visibilityMode');
+    loadVisibility(visibilityMode);
     checkAuthentication();
     // Pass visibilityMode from the window object
-    fetchAndSetTableData(window.visibilityMode).then(() => {
+    fetchAndSetTableData(visibilityMode).then(() => {
         setDownloadButtons();
-        if (visibilityMode === 0) {
+        if (visibilityMode === '0') {
             setDeleteButtons();
             setPublicButtons();
             setPrivateButtons();
@@ -15,6 +16,18 @@ window.onload = function onLoad() {
         console.error(error);
         updateFileManagerContent(); // Handle error by updating file manager content
     });
+}
+
+function loadVisibility(visibilityMode) {
+    buttonBody = document.getElementById('toggle-visibility-btn');
+    deleteAllBody = document.getElementsByClassName('delete-all');
+    if(visibilityMode === '0') {
+        buttonBody.innerHTML = 'Shared files';
+        deleteAllBody[0].style.display = 'initial';
+    } else  {
+        buttonBody.innerHTML = 'Private files';
+        deleteAllBody[0].style.display = 'none';
+    }
 }
 
 function updateFileManagerContent() {
@@ -34,10 +47,11 @@ function checkAuthentication() {
     }
 }
 
-function fetchAndSetTableData(visibilityMode) {
+function fetchAndSetTableData() {
     const connection = new XMLHttpRequest();
+    var visibilityMode = sessionStorage.getItem('visibilityMode');
     var url;
-    if (visibilityMode === 1) {
+    if (visibilityMode === '1') {
         url = '../php/fetch_data.php?isPrivate=1'; // Include isPrivate parameter in the URL
     } else {
         url = '../php/fetch_data.php?isPrivate=0'; // Include isPrivate parameter in the URL
@@ -56,7 +70,12 @@ function fetchAndSetTableData(visibilityMode) {
                     let imgSrc = getImageForFileType(file_type);
                     const isImage = file_type === 'png' || file_type === 'jpeg';
                     const filePreviewCell = isImage ? `class="file-preview" data-image-src="${file.file_path}"` : '';
-
+                    const deleteButton = visibilityMode === '0' ? 
+                    `
+                    <button class="delete-btn" data-file="${file.file_path}">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                    ` : ''
                     var tableRow = `
                     <tr>
                         <td>
@@ -79,22 +98,15 @@ function fetchAndSetTableData(visibilityMode) {
                                 <span class="material-symbols-outlined">download</span>
                             </button>
                         </td>
+                        <td>
+                            ${deleteButton}
+                        </td>
                         <td>`;
 
-                    if (visibilityMode === 0) {
-                        tableRow = tableRow.concat(
-                            ` <td>
-                    <button class="delete-btn" data-file="${file.file_path}">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </td>`
-                        );
-                    }
-
-                    return getFileVisibility(file.file_path)
+                    return getFileVisibility(file.file_path, visibilityMode)
                     .then(data => {
-                        var isPrivate = data.is_private;
-                        if (visibilityMode === 0) {
+                        if (visibilityMode === '0') {
+                            var isPrivate = data.is_private;
                             if (isPrivate === 1) {
                                 tableRow = tableRow.concat(
                                     `
@@ -171,7 +183,6 @@ function setDownloadButtons() {
             var link = document.createElement('a');
             link.href = filePath;
             link.download = filePath.split('/').pop();
-            console.log(link.download)
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -241,7 +252,7 @@ function changeFileVisibility(filePath, visibility) {
     });
 }
 
-function getFileVisibility(filePath) {
+function getFileVisibility(filePath, visibilityMode) {
     var file_name = filePath.split('/').pop();
 
     return fetch('../php/get_file_visibility.php', {
@@ -255,13 +266,14 @@ function getFileVisibility(filePath) {
         })
         .then(response => {
             if (response.ok) {
-                return response.json();
+                
+                return visibilityMode === '0' ? response.json() : "";
             } else {
-                throw new Error('Failed to update the file');
+                throw new Error('Failed to get the file');
             }
         })
         .catch(error => {
             console.error(error);
-            throw new Error('Failed to update the file');
+            throw new Error('Failed to get the file');
         });
 }
